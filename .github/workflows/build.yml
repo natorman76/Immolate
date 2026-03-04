@@ -11,17 +11,19 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Install OpenCL
+      - name: Install OpenCL via vcpkg
         run: |
-          winget install --id Kitware.CMake
-          vcpkg install opencl
+          git clone https://github.com/microsoft/vcpkg.git
+          .\vcpkg\bootstrap-vcpkg.bat
+          .\vcpkg\vcpkg.exe install opencl:x64-windows
+          .\vcpkg\vcpkg.exe integrate install
 
       - name: Setup MSVC
         uses: ilammy/msvc-dev-cmd@v1
 
       - name: Build
         run: |
-          cmake -G "Visual Studio 17 2022" -A x64 -B build
+          cmake -G "Visual Studio 17 2022" -A x64 -B build -DCMAKE_TOOLCHAIN_FILE=.\vcpkg\scripts\buildsystems\vcpkg.cmake
           cmake --build build --config Release
 
       - name: Upload artifact
