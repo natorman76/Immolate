@@ -9,7 +9,7 @@ jobs:
   build-windows:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Install OpenCL via vcpkg
         run: |
@@ -23,7 +23,7 @@ jobs:
 
       - name: Build
         run: |
-          cmake -G "Visual Studio 17 2022" -A x64 -B build -DCMAKE_TOOLCHAIN_FILE=.\vcpkg\scripts\buildsystems\vcpkg.cmake
+          cmake -G "Visual Studio 17 2022" -A x64 -B build "-DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake"
           cmake --build build --config Release
 
       - name: Upload artifact
